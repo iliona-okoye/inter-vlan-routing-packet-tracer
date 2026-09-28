@@ -31,12 +31,24 @@ Subnet mask on all hosts: 255.255.255.248 (/29)
 
 ## Verification
 
-- `show ip interface brief` on the router shows all subinterfaces up/up
-- Pings work within each VLAN (for example PC7 to PC8)
-- Pings work between VLANs (for example PC3 to PC5, PC7 to PC1)
-- TTL=127 on inter-VLAN replies shows the traffic passed through the router
-- The first ping sometimes times out because of ARP; the rest succeed
+## Access Control
 
+After confirming full connectivity, I restricted cross-VLAN access so that VLAN 20 (HR) is isolated from VLAN 10 (Sales), VLAN 30 (Finance) and VLAN 40 (IT). Devices inside the same VLAN can still communicate.
+
+## Verification
+
+Before restriction:
+- Pings worked within each VLAN and between all VLANs
+- TTL=127 on inter-VLAN replies showed the traffic passed through the router
+- The first ping sometimes timed out because of ARP; the rest succeeded
+
+After restriction:
+- PC3 (HR) to PC4 (HR) succeeded
+- PC3 (HR) to PC5 (Finance) and PC7 (IT) failed with "Destination host unreachable" (100% loss)
+- PC3 (HR) to PC1 (Sales) failed with "Request timed out" (100% loss)
+- Failed pings were the expected result and confirmed the restriction works
+
+`show ip interface brief` on the router shows all subinterfaces up/up.
 ## Repository Contents
 
 - `lab/` - the Packet Tracer (.pkt) file
